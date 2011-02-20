@@ -37,7 +37,8 @@
 //#include <mmc.h>
 
 const char version_string[] =
-	"Texas Instruments X-Loader 1.4.4ss (" __DATE__ " - " __TIME__ ")";
+	"Texas Instruments X-Loader 1.4.5ss unified ("
+						    __DATE__ " - " __TIME__ ")";
 
 int print_info(void)
 {
