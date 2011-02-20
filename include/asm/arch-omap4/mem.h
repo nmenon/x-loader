@@ -43,6 +43,9 @@ typedef enum {
 #define GPMC_NONE           6
 #define GPMC_ONENAND_TRY    7
 
+void ddr_init(void);
+
+
 #endif
 
 
@@ -281,9 +284,5 @@ typedef enum {
 #define PISMO2_CS0_BASE		PISMO2_MAP1
 #define PISMO1_ONEN_BASE	ONENAND_MAP
 #define DBG_MPDB_BASE		DEBUG_BASE
-
-void ddr_init(void);
-
-#endif /* endif __ASSEMBLY__ */
 
 #endif /* endif _OMAP44XX_MEM_H_ */

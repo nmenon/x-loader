@@ -119,7 +119,6 @@ static const unsigned char tran_mant[] = {
 	0,      10,     12,     13,     15,     20,     25,     30,
 	35,     40,     45,     50,     55,     60,     70,     80,
 };
-
 typedef struct {
 	unsigned not_used:1;
 	unsigned crc:7;
@@ -235,6 +234,7 @@ typedef struct {
 	unsigned char reserved_13[7];
 } mmc_extended_csd_reg_t;
 
+
 /* mmc sd responce */
 typedef struct {
 	unsigned int ocr;
@@ -244,6 +244,7 @@ typedef struct {
 	unsigned short cardstatus;
 	unsigned short newpublishedrca;
 } mmc_resp_r6;
+
 
 extern mmc_card_data mmc_dev;
 

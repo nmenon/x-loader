@@ -2,10 +2,7 @@
  * (C) Copyright 2006 
  * Texas Instruments <www.ti.com>
  * Richard Woodruff <r-woodruff2@ti.com>
-<<<<<<< HEAD
-=======
  * David Anders <x0132446@ti.com>
->>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437
  *
  * X-Loader Configuation settings for the TI OMAP SDP3430 board.
  *
@@ -44,27 +41,18 @@
 #define CONFIG_OMAP4430          1    /* which is in a 3430 */
 #define CONFIG_4430PANDA         1    /* working with SDP */
 
-<<<<<<< HEAD
 /* Keep Default @ 33MHz at boot loader level
  * On Phoenix board vlotage needs to be bumped up
  * before scaling the MPU up
  */
 #define CONFIG_MPU_600		1
-=======
->>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437
 #define CORE_190MHZ		1
 /* Enable the below macro if MMC boot support is required */
 #define CONFIG_MMC               1
 #if defined(CONFIG_MMC)
-<<<<<<< HEAD
 	/* To Enable MMC boot for OMAP4430 Panda */
 	//#define CONFIG_MMC1		1
 	/* To Enable EMMC boot for OMAP4430 Panda */
-=======
-	/* To Enable MMC boot for OMAP4430 SDP */
-	//#define CONFIG_MMC1		1
-	/* To Enable EMMC boot for OMAP4430 SDP */
->>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437
 	#define CONFIG_MMC2		1
 	#define CFG_CMD_MMC		1
 	#define CFG_CMD_FAT		1

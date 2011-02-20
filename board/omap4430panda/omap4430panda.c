@@ -140,18 +140,6 @@
 #define ZQ_CONFIG			0x500b3215
 
 #define CS1_MR(mr)	((mr) | 0x80000000)
-struct ddr_regs{
-	u32 tim1;
-	u32 tim2;
-	u32 tim3;
-	u32 phy_ctrl_1;
-	u32 ref_ctrl;
-	u32 config_init;
-	u32 config_final;
-	u32 zq_config;
-	u8 mr1;
-	u8 mr2;
-};
 const struct ddr_regs ddr_regs_380_mhz = {
 	.tim1		= 0x10cb061a,
 	.tim2		= 0x20350d52,
@@ -397,7 +385,7 @@ static int emif_config(unsigned int base)
  * EMIF1 -- CS0 -- DDR1 (256 MB)
  * EMIF2 -- CS0 -- DDR2 (256 MB)
  *****************************************/
-static void ddr_init(void)
+void ddr_init(void)
 {
 	unsigned int base_addr;
 

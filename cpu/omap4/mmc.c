@@ -35,7 +35,6 @@
 
 #include <config.h>
 #include <common.h>
-#include <mmc.h>
 #include <part.h>
 
 #ifdef CFG_CMD_MMC

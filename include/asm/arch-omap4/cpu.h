@@ -492,7 +492,6 @@
 #define DMM_LISA_MAP_2 			0x0048
 #define DMM_LISA_MAP_3 			0x004C
 
->>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437
 #ifdef CONFIG_LCD
 	extern void lcd_disable(void);
 	extern void lcd_panel_disable(void);
@@ -546,7 +545,6 @@ unsigned int cortex_a9_rev(void);
 unsigned int get_boot_device(void);
 unsigned int raw_boot(void);
 unsigned int fat_boot(void);
-void ddr_init(void);
 void do_ddr_init(const struct ddr_regs *emif1_ddr_regs,
 		 const struct ddr_regs *emif2_ddr_regs);
 void set_muxconf_regs(void);

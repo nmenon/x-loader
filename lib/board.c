@@ -34,7 +34,7 @@
 #include <part.h>
 #include <fat.h>
 #include <asm/arch/mem.h>
-#include <mmc.h>
+//#include <mmc.h>
 
 const char version_string[] =
 	"Texas Instruments X-Loader 1.4.4ss (" __DATE__ " - " __TIME__ ")";
@@ -168,6 +168,7 @@ int mmc_read_bootloader(int dev)
 {
 	unsigned char ret = 0;
 	unsigned long offset = CFG_LOADADDR;
+	int mmc_read(int mmc_cont, unsigned int src, unsigned char *dst, int size);
 
 	ret = mmc_init(dev);
 	if (ret != 0){

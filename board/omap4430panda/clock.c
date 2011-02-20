@@ -33,17 +33,6 @@
 
 #define CONFIG_OMAP4_SDC 1
 
-/* Used to index into DPLL parameter tables */
-struct dpll_param {
-	unsigned int m;
-	unsigned int n;
-	unsigned int m2;
-	unsigned int m3;
-	unsigned int m4;
-	unsigned int m5;
-	unsigned int m6;
-	unsigned int m7;
-};
 
 /* Tables having M,N,M2 et al values for different sys_clk speeds
  * This table is generated only for OPP100

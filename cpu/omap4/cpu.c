@@ -37,6 +37,7 @@
 #include <asm/arch/cpu.h>
 #include <asm/arch/sys_proto.h>
 #include <asm/arch/smc.h>
+#include <asm/arch/mem.h>
 
 /* See also ARM Ref. Man. */
 #define C1_MMU		(1<<0)		/* mmu off/on */
@@ -134,105 +135,3 @@ unsigned int fat_boot(void)
 		return 0;
 }
 
-#if defined(CONFIG_MPU_600) || defined(CONFIG_MPU_1000)
-static void scale_vcores(void)
-{
-	unsigned int rev = omap_revision();
-	/* For VC bypass only VCOREx_CGF_FORCE  is necessary and
-	 * VCOREx_CFG_VOLTAGE  changes can be discarded
-	 */
-	/* PRM_VC_CFG_I2C_MODE */
-	__raw_writel(0x0, 0x4A307BA8);
-	/* PRM_VC_CFG_I2C_CLK */
-	__raw_writel(0x6026, 0x4A307BAC);
-
-	/* set VCORE1 force VSEL */
-	/* PRM_VC_VAL_BYPASS) */
-        if(rev == OMAP4430_ES1_0)
-		__raw_writel(0x3B5512, 0x4A307BA0);
-	else if (rev == OMAP4430_ES2_0)
-		__raw_writel(0x3A5512, 0x4A307BA0);
-	else if (rev >= OMAP4430_ES2_1)
-		__raw_writel(0x3A5512, 0x4A307BA0);
-
-	__raw_writel(__raw_readl(0x4A307BA0) | 0x1000000, 0x4A307BA0);
-	while(__raw_readl(0x4A307BA0) & 0x1000000)
-		;
-
-	/* PRM_IRQSTATUS_MPU */
-	__raw_writel(__raw_readl(0x4A306010), 0x4A306010);
-
-
-	/* FIXME: set VCORE2 force VSEL, Check the reset value */
-	/* PRM_VC_VAL_BYPASS) */
-        if(rev == OMAP4430_ES1_0)
-		__raw_writel(0x315B12, 0x4A307BA0);
-	else
-		__raw_writel(0x295B12, 0x4A307BA0);
-	__raw_writel(__raw_readl(0x4A307BA0) | 0x1000000, 0x4A307BA0);
-	while(__raw_readl(0x4A307BA0) & 0x1000000)
-		;
-
-	/* PRM_IRQSTATUS_MPU */
-	__raw_writel(__raw_readl(0x4A306010), 0x4A306010);
-
-	/*/set VCORE3 force VSEL */
-	/* PRM_VC_VAL_BYPASS */
-        if(rev == OMAP4430_ES1_0)
-		__raw_writel(0x316112, 0x4A307BA0);
-	else if (rev == OMAP4430_ES2_0)
-		__raw_writel(0x296112, 0x4A307BA0);
-	else if (rev >= OMAP4430_ES2_1)
-		__raw_writel(0x2A6112, 0x4A307BA0);
-
-	__raw_writel(__raw_readl(0x4A307BA0) | 0x1000000, 0x4A307BA0);
-
-	while(__raw_readl(0x4A307BA0) & 0x1000000)
-		;
-
-	/* PRM_IRQSTATUS_MPU */
-	__raw_writel(__raw_readl(0x4A306010), 0x4A306010);
-
-}
-#endif
-
-
-
-/**********************************************************
- * Routine: s_init
- * Description: Does early system init of muxing and clocks.
- * - Called path is with SRAM stack.
- **********************************************************/
-void s_init(void)
-{
-	set_muxconf_regs();
-	spin_delay(100);
-
-	/* Set VCORE1 = 1.3 V, VCORE2 = VCORE3 = 1.21V */
-#if defined(CONFIG_MPU_600) || defined(CONFIG_MPU_1000)
-	scale_vcores();
-#endif	
-
-	prcm_init();
-	ddr_init();
-
-
-}
-
-/******************************************************
- * Routine: wait_for_command_complete
- * Description: Wait for posting to finish on watchdog
- ******************************************************/
-void wait_for_command_complete(unsigned int wd_base)
-{
-	int pending = 1;
-	do {
-		pending = __raw_readl(wd_base + WWPS);
-	} while (pending);
-}
-
-int nand_init(void)
-{
-	return 1;
-}
->>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437

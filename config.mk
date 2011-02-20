@@ -140,7 +140,7 @@ endif
 
 CPPFLAGS += -I$(TOPDIR)/include
 CPPFLAGS += -fno-builtin -ffreestanding -nostdinc      \
-       -isystem $(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
+       -isystem $(gccincdir) -pipe $(PLATFORM_CPPFLAGS) \
 	-I$(TOPDIR)/include				\
 	-fno-builtin -ffreestanding -nostdinc -isystem	\
 	$(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
@@ -153,7 +153,7 @@ CFLAGS := $(CPPFLAGS) -Wall -Wstrict-prototypes
 endif
 
 AFLAGS_DEBUG := -Wa,-gstabs
-AFLAGS := $(AFLAGS_DEBUG) -D__ASSEMBLY__ $(CPPFLAGS)
+AFLAGS := $(AFLAGS_DEBUG) -D__ASSEMBLY__ $(CPPFLAGS) -Wa,-march=armv7-a+sec
 
 LDFLAGS += -Bstatic -T $(LDSCRIPT) -Ttext $(TEXT_BASE) $(PLATFORM_LDFLAGS)
 
@@ -207,9 +207,5 @@ $(obj)%.o:	%.S
 $(obj)%.o:	%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 endif
-
-.depend:	Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c) $(AOBJS:.o=.S)  $(START:.o=.S) $(COBJS:.o=.c)
-		$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) | \
-			sed -e "s/\:/\\\:/g"|sed -e "s/\\\: /\: /g"> $@
 
 #########################################################################

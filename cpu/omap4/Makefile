@@ -28,6 +28,7 @@ LIB	= $(obj)lib$(CPU).a
 
 START	= start.o
 COBJS	= cpu.o mmc.o sys_info.o
+SOBJS   = platform.o smc.o
 
 SRCS	:= $(START:.o=.S) $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS	:= $(addprefix $(obj),$(SOBJS) $(COBJS))
