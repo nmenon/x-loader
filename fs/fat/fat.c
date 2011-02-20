@@ -145,10 +145,10 @@ fat_register_device(block_dev_desc_t *dev_desc, int part_no)
 			return -1;
 		}
 #else
-		part_offset = buffer[DOS_PART_TBL_OFFSET+8]      |
-		              buffer[DOS_PART_TBL_OFFSET+9] <<8  |
-		              buffer[DOS_PART_TBL_OFFSET+10]<<16 |
-		              buffer[DOS_PART_TBL_OFFSET+11]<<24;
+		part_offset =	buffer[DOS_PART_TBL_OFFSET + 8]  << 0	|
+				buffer[DOS_PART_TBL_OFFSET + 9]  << 8	|
+				buffer[DOS_PART_TBL_OFFSET + 10] << 16	|
+				buffer[DOS_PART_TBL_OFFSET + 11] << 24;
 
 		cur_part = 1;
 #endif
@@ -430,17 +430,17 @@ getit:
 
 
 #ifdef CONFIG_SUPPORT_VFAT
-
 /* Calculate short name checksum */
 static __u8
-mkcksum(const char *str)
+mkcksum(const char *str, const char *ext)
 {
 	int i;
 	__u8 ret = 0;
 
-	for (i = 0; i < 11; i++) {
-		ret = (((ret&1)<<7)|((ret&0xfe)>>1)) + str[i];
-	}
+	for (i = 0; i < 8; i++)
+			ret = (((ret&1)<<7)|((ret&0xfe)>>1)) + str[i];
+	for (i = 0; i < 3; i++)
+			ret = (((ret&1)<<7)|((ret&0xfe)>>1)) + ext[i];
 
 	return ret;
 }
@@ -573,7 +573,7 @@ read_bootsectandvi(boot_sector *bs, volume_info *volinfo, int *fatsize)
 	volume_info *vistart;
 	char *p;
 
-	printf("Reading boot sector\n");
+	FAT_DPRINT("Reading boot sector\n");
 
 	if (disk_read(0, 1, block) < 0) {
 		FAT_DPRINT("Error: reading block\n");
@@ -670,7 +670,7 @@ do_fat_read(const char *filename, void *buffer, unsigned long maxsize,
     mydata->fat_sect = bs.reserved;
     cursect = mydata->rootdir_sect
 	    = mydata->fat_sect + mydata->fatlength * bs.fats;
-    curclus = bs.root_cluster;   // For FAT32 only
+    curclus = bs.root_cluster;   /* For FAT32 only */
     mydata->clust_size = bs.cluster_size;
     if (mydata->fatsize == 32) {
 	rootdir_size = mydata->clust_size;
@@ -707,7 +707,7 @@ do_fat_read(const char *filename, void *buffer, unsigned long maxsize,
     } else if ((idx = dirdelim ((char *)fnamecopy)) >= 0) {
 	isdir = 1;
 	fnamecopy[idx] = '\0';
-	subname = (char *)fnamecopy + idx + 1;
+	subname = (char *)(fnamecopy + idx + 1);
 	/* Handle multiple delimiters */
 	while (ISDIRDELIM (*subname))
 	    subname++;
@@ -741,7 +741,7 @@ do_fat_read(const char *filename, void *buffer, unsigned long maxsize,
 	    }
 #ifdef CONFIG_SUPPORT_VFAT
 	    else if (dols == LS_ROOT
-		     && mkcksum (dentptr->name) == prevcksum) {
+		     && mkcksum(dentptr->name, dentptr->ext) == prevcksum) {
 		dentptr++;
 		continue;
 	    }
@@ -778,7 +778,7 @@ do_fat_read(const char *filename, void *buffer, unsigned long maxsize,
 		continue;
 	    }
 	    if (strcmp ((char *)fnamecopy, s_name) &&
-					   strcmp ((char *)fnamecopy, l_name)) {
+			    strcmp ((char *)fnamecopy, l_name)) {
 		FAT_DPRINT ("RootMismatch: |%s|%s|\n", s_name, l_name);
 		dentptr++;
 		continue;
@@ -797,7 +797,7 @@ do_fat_read(const char *filename, void *buffer, unsigned long maxsize,
 	if (mydata->fatsize != 32)
 	   cursect++;
 	else {
-	   // FAT32 does not guarantee contiguous root directory
+	   /* FAT32 does not guarantee contiguous root directory */
 	   curclus = get_fatent (mydata, curclus);
 	   cursect = (curclus * mydata->clust_size) + mydata->data_begin;
 

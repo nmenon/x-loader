@@ -60,6 +60,10 @@ Directory Hierarchy:
 - cpu/omap3 Files specific to ARM CortexA8 CPU
 
  
+=======
+- board/omap1710h3
+		Files specific to OMAP 1710 H3 boards
+>>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437
 - board/omap2420h4
 		Files specific to OMAP 2420 H4 boards
 - board/omap2430sdp
@@ -114,9 +118,14 @@ Next you need to get your OS boot loader to Nand at the address your
 X-Loader expects. For the H3 example, you can use U-Boot to flash U-Boot.
 You can't use FlashWriterNand because it uses ROM code ECC style.  
 
+More Information
+================
+
+OMAP1710 NAND Booting Design Document has more information.
+
 Implemenation notes:
 ====================
-H4 support NAND flash booting
+H3, H4 support NAND flash booting
 2430sdp & 3430sdp support OneNAND booting
 
 
@@ -139,4 +148,8 @@ H4 support NAND flash booting
 
 
 
+<<<<<<< HEAD
  
+=======
+ 
+>>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437

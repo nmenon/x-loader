@@ -94,6 +94,10 @@ _bss_end:
  */
 
 reset: 
+	ldr	r4, scratchpad		/* r4 <- scratchpad reg address */
+	ldr	r5, [r0, #0x4]		/* r5 <- value of boot device */
+	str	r5, [r4]		/* store r5 in scratchpad reg */
+
 	/*
 	 * set the cpu to SVC32 mode
 	 */
@@ -222,3 +226,5 @@ do_hang:
 	ldr	sp, _TEXT_BASE		/* use 32 words abort stack */
    	bl	hang			/* hang and never return */
 
+scratchpad:
+    .word 0x480029c0

@@ -24,14 +24,17 @@
 #ifndef _OMAP44XX_CPU_H
 #define  _OMAP44XX_CPU_H
 #include <asm/arch/omap4430.h>
+#ifndef	__ASSEMBLY__
+#include <linux/types.h>
+#endif
 
 /* Register offsets of common modules */
 /* Control */
-#define CONTROL_STATUS			(OMAP44XX_CTRL_BASE + 0x2F0)
-#define OMAP44XX_MCR			(OMAP44XX_CTRL_BASE + 0x8C)
-#define CONTROL_SCALABLE_OMAP_STATUS	(OMAP44XX_CTRL_BASE + 0x44C)
-#define CONTROL_SCALABLE_OMAP_OCP	(OMAP44XX_CTRL_BASE + 0x534)
+#define CONTROL_ID_CODE			(OMAP44XX_CTRL_GEN_BASE + 0x204)
+#define CONTROL_STATUS			(OMAP44XX_CTRL_GEN_BASE + 0x2C4)
 
+/* PL310 */
+#define OMAP44XX_PL310_AUX_CTRL		(OMAP44XX_PL310_BASE + 0x104)
 
 /* Tap Information */
 #define TAP_IDCODE_REG		(OMAP44XX_TAP_BASE+0x204)
@@ -396,6 +399,9 @@
 #define CM_DSS_DSS_CLKCTRL              0x4a009120
 #define CM_DSS_DEISS_CLKCTRL            0x4a009128
 
+/* PM.DSS */
+#define PM_DSS_PWRSTCTRL		0x4a307100
+
 /* CM2.SGX */
 #define CM_SGX_CLKSTCTRL                0x4a009200
 #define CM_SGX_SGX_CLKCTRL              0x4a009220
@@ -442,6 +448,51 @@
 #define I2C_BASE2		(OMAP44XX_L4_PER + 0x72000)
 #define I2C_BASE3		(OMAP44XX_L4_PER + 0x60000)
 
+/* EMIF and DMM registers */
+#define EMIF1_BASE			0x4c000000
+#define EMIF2_BASE			0x4d000000
+#define DMM_BASE			0x4e000000
+/* EMIF */
+#define EMIF_MOD_ID_REV			0x0000
+#define EMIF_STATUS			0x0004
+#define EMIF_SDRAM_CONFIG		0x0008
+#define EMIF_LPDDR2_NVM_CONFIG		0x000C
+#define EMIF_SDRAM_REF_CTRL		0x0010
+#define EMIF_SDRAM_REF_CTRL_SHDW	0x0014
+#define EMIF_SDRAM_TIM_1		0x0018
+#define EMIF_SDRAM_TIM_1_SHDW		0x001C
+#define EMIF_SDRAM_TIM_2		0x0020
+#define EMIF_SDRAM_TIM_2_SHDW		0x0024
+#define EMIF_SDRAM_TIM_3		0x0028
+#define EMIF_SDRAM_TIM_3_SHDW		0x002C
+#define EMIF_LPDDR2_NVM_TIM		0x0030
+#define EMIF_LPDDR2_NVM_TIM_SHDW	0x0034
+#define EMIF_PWR_MGMT_CTRL		0x0038
+#define EMIF_PWR_MGMT_CTRL_SHDW		0x003C
+#define EMIF_LPDDR2_MODE_REG_DATA	0x0040
+#define EMIF_LPDDR2_MODE_REG_CFG	0x0050
+#define EMIF_L3_CONFIG			0x0054
+#define EMIF_L3_CFG_VAL_1		0x0058
+#define EMIF_L3_CFG_VAL_2		0x005C
+#define IODFT_TLGC			0x0060
+#define EMIF_PERF_CNT_1			0x0080
+#define EMIF_PERF_CNT_2			0x0084
+#define EMIF_PERF_CNT_CFG		0x0088
+#define EMIF_PERF_CNT_SEL		0x008C
+#define EMIF_PERF_CNT_TIM		0x0090
+#define EMIF_READ_IDLE_CTRL		0x0098
+#define EMIF_READ_IDLE_CTRL_SHDW	0x009c
+#define EMIF_ZQ_CONFIG			0x00C8
+#define EMIF_DDR_PHY_CTRL_1		0x00E4
+#define EMIF_DDR_PHY_CTRL_1_SHDW	0x00E8
+#define EMIF_DDR_PHY_CTRL_2		0x00EC
+
+#define DMM_LISA_MAP_0 			0x0040
+#define DMM_LISA_MAP_1 			0x0044
+#define DMM_LISA_MAP_2 			0x0048
+#define DMM_LISA_MAP_3 			0x004C
+
+>>>>>>> 9096975d5efacdc7ba2ebd047d086bdb5b2bb437
 #ifdef CONFIG_LCD
 	extern void lcd_disable(void);
 	extern void lcd_panel_disable(void);
@@ -460,6 +511,59 @@ unsigned int omap_revision(void);
 unsigned int cortex_a9_rev(void);
 
 void big_delay(unsigned int count);
+
+/* structure for ddr timings */
+struct ddr_regs{
+	u32 tim1;
+	u32 tim2;
+	u32 tim3;
+	u32 phy_ctrl_1;
+	u32 ref_ctrl;
+	u32 config_init;
+	u32 config_final;
+	u32 zq_config;
+	u8 mr1;
+	u8 mr2;
+};
+
+/* Used to index into DPLL parameter tables */
+struct dpll_param {
+	unsigned int m;
+	unsigned int n;
+	unsigned int m2;
+	unsigned int m3;
+	unsigned int m4;
+	unsigned int m5;
+	unsigned int m6;
+	unsigned int m7;
+	unsigned int sd_div;
+};
+
+/*Functions for silicon revision */
+void sr32(u32 addr, u32 start_bit, u32 num_bits, u32 value);
+unsigned int omap_revision(void);
+unsigned int cortex_a9_rev(void);
+unsigned int get_boot_device(void);
+unsigned int raw_boot(void);
+unsigned int fat_boot(void);
+void ddr_init(void);
+void do_ddr_init(const struct ddr_regs *emif1_ddr_regs,
+		 const struct ddr_regs *emif2_ddr_regs);
+void set_muxconf_regs(void);
+void prcm_init(void);
+void configure_core_dpll_no_lock(void);
+void lock_core_dpll_shadow(void);
+
+/*******************************************************
+ * Routine: delay
+ * Description: spinning delay to use before udelay works
+ ******************************************************/
+static inline void spin_delay(unsigned long loops)
+{
+	__asm__ volatile ("1:\n" "subs %0, %1, #1\n"
+			  "bne 1b" : "=r" (loops) : "0"(loops));
+}
+
 #endif
 
 #endif

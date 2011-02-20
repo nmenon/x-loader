@@ -282,4 +282,8 @@ typedef enum {
 #define PISMO1_ONEN_BASE	ONENAND_MAP
 #define DBG_MPDB_BASE		DEBUG_BASE
 
+void ddr_init(void);
+
+#endif /* endif __ASSEMBLY__ */
+
 #endif /* endif _OMAP44XX_MEM_H_ */

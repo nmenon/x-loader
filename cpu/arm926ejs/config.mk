@@ -19,10 +19,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA 02111-1307 USA
-#
 PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8
 
-PLATFORM_CPPFLAGS += -march=armv7-a
+PLATFORM_CPPFLAGS += -march=armv5
 # =========================================================================
 #
 # Supply options according to compiler version
@@ -30,3 +29,4 @@ PLATFORM_CPPFLAGS += -march=armv7-a
 # =========================================================================
 PLATFORM_CPPFLAGS +=$(call cc-option,-mapcs-32,-mabi=apcs-gnu)
 PLATFORM_RELFLAGS +=$(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,))
+#

@@ -1,8 +1,8 @@
 /*
  * (C) Copyright 2006-2009
- * Texas Instruments, <www.ti.com>
- * Richard Woodruff <r-woodruff2@ti.com>
- * Syed Mohammed Khasim <x0khasim@ti.com>
+ * omap4430.h
+ *
+ * Copyright(c) 2010 Texas Instruments.   All rights reserved.
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -95,6 +95,11 @@
 #define OMAP44XX_PRM_IRQSTATUS_MPU_A9	(OMAP44XX_WAKEUP_L4_IO_BASE + 0x6010)
 
 
+#define OMAP44XX_CTRL_GEN_BASE		(OMAP44XX_L4_IO_BASE+0x2000)
+#define OMAP44XX_CTRL_PADCONF_CORE_BASE	0x4a100000
+
+/* PL310 */
+#define OMAP44XX_PL310_BASE		0x48242000
 
 /* TAP information  dont know for 3430*/
 #define OMAP44XX_TAP_BASE	(0x49000000) /*giving some junk for virtio */
@@ -157,7 +162,6 @@
 #define OMAP44XX_SCRM_ALTCLKSRC		(OMAP44XX_SCRM_BASE + 0x110)
 #define OMAP44XX_SCRM_AUXCLK1		(OMAP44XX_SCRM_BASE + 0x314)
 #define OMAP44XX_SCRM_AUXCLK3		(OMAP44XX_SCRM_BASE + 0x31c)
-
 
 /* 32KTIMER */
 #define SYNC_32KTIMER_BASE		(0x48320000)

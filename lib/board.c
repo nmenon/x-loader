@@ -34,6 +34,7 @@
 #include <part.h>
 #include <fat.h>
 #include <asm/arch/mem.h>
+#include <mmc.h>
 
 const char version_string[] =
 	"Texas Instruments X-Loader 1.4.4ss (" __DATE__ " - " __TIME__ ")";
@@ -75,6 +76,7 @@ init_fnc_t *init_sequence[] = {
 #endif
   	NULL,
 };
+#if 0
 
 void start_armboot (void)
 {
@@ -144,6 +146,125 @@ void start_armboot (void)
  	((init_fnc_t *)CFG_LOADADDR)();
 
 	/* should never come here */
+}
+#endif
+
+#ifdef CFG_CMD_FAT
+extern char * strcpy(char * dest,const char *src);
+#else
+char * strcpy(char * dest,const char *src)
+{
+	 char *tmp = dest;
+
+	 while ((*dest++ = *src++) != '\0')
+	         /* nothing */;
+	 return tmp;
+}
+#endif
+
+#ifdef CFG_CMD_MMC
+extern block_dev_desc_t *mmc_get_dev(int dev);
+int mmc_read_bootloader(int dev)
+{
+	unsigned char ret = 0;
+	unsigned long offset = CFG_LOADADDR;
+
+	ret = mmc_init(dev);
+	if (ret != 0){
+		printf("\n MMC init failed \n");
+		return -1;
+	}
+
+#ifdef CFG_CMD_FAT
+	long size;
+	block_dev_desc_t *dev_desc = NULL;
+
+	if (fat_boot()) {
+		dev_desc = mmc_get_dev(dev);
+		fat_register_device(dev_desc, 1);
+		size = file_fat_read("u-boot.bin", (unsigned char *)offset, 0);
+		if (size == -1)
+			return -1;
+	} else {
+		/* FIXME: OMAP4 specific */
+		 mmc_read(dev, 0x200, (unsigned char *)CFG_LOADADDR,
+							0x00060000);
+	}
+#endif
+	return 0;
+}
+#endif
+
+extern int do_load_serial_bin(ulong offset, int baudrate);
+
+#define __raw_readl(a)	(*(volatile unsigned int *)(a))
+
+void start_armboot (void)
+{
+  	init_fnc_t **init_fnc_ptr;
+	uchar *buf;
+	char boot_dev_name[8];
+ 
+   	for (init_fnc_ptr = init_sequence; *init_fnc_ptr; ++init_fnc_ptr) {
+		if ((*init_fnc_ptr)() != 0) {
+			hang ();
+		}
+	}
+#ifdef START_LOADB_DOWNLOAD
+	strcpy(boot_dev_name, "UART");
+	do_load_serial_bin (CFG_LOADADDR, 115200);
+#else
+	buf = (uchar *) CFG_LOADADDR;
+
+	switch (get_boot_device()) {
+	case 0x03:
+		strcpy(boot_dev_name, "ONENAND");
+#if defined(CFG_ONENAND)
+		for (i = ONENAND_START_BLOCK; i < ONENAND_END_BLOCK; i++) {
+			if (!onenand_read_block(buf, i))
+				buf += ONENAND_BLOCK_SIZE;
+			else
+				goto error;
+		}
+#endif
+		break;
+	case 0x02:
+	default:
+		strcpy(boot_dev_name, "NAND");
+#if defined(CFG_NAND)
+		for (i = NAND_UBOOT_START; i < NAND_UBOOT_END;
+				i+= NAND_BLOCK_SIZE) {
+			if (!nand_read_block(buf, i))
+				buf += NAND_BLOCK_SIZE; /* advance buf ptr */
+		}
+#endif
+		break;
+	case 0x05:
+		strcpy(boot_dev_name, "MMC/SD1");
+#if defined(CONFIG_MMC)
+		if (mmc_read_bootloader(0) != 0)
+			goto error;
+#endif
+		break;
+	case 0x06:
+		strcpy(boot_dev_name, "EMMC");
+#if defined(CONFIG_MMC)
+		if (mmc_read_bootloader(1) != 0)
+			goto error;
+#endif
+		break;
+	};
+#endif
+	/* go run U-Boot and never return */
+	printf("Starting OS Bootloader from %s ...\n", boot_dev_name);
+ 	((init_fnc_t *)CFG_LOADADDR)();
+
+	/* should never come here */
+#if defined(CFG_ONENAND) || defined(CONFIG_MMC)
+error:
+#endif
+	printf("Could not read bootloader!\n");
+	hang();
 }
 
 void hang (void)

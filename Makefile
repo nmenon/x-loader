@@ -233,8 +233,56 @@ igep0020_config :    unconfig
 #########################################################################
 ## OMAP4 (ARM-CortexA9) Systems
 #########################################################################
+#omap4430panda_config :    unconfig
+#	@./mkconfig $(@:_config=) arm omap4 omap4430panda 1
+
+omap4430sdp_MPU_600MHz_config \
+omap4430sdp_config :    unconfig
+	@./mkconfig $(@:_config=) arm omap4 omap4430sdp
+	echo "/* Generarated file. Do not edit */" >./include/config.h
+	echo "#include <configs/omap4430sdp.h>" >>./include/config.h
+	@[ -n "$(findstring _MPU_600MHz,$@)" ] || \
+		{ echo "#define CONFIG_MPU_1000 1"	>>./include/config.h ; \
+		  echo "MPU at 1GHz revision.." ; \
+		}
+	@[ -z "$(findstring _MPU_600MHz,$@)" ] || \
+		{ echo "#define CONFIG_MPU_600 1"	>>./include/config.h ; \
+		  echo "MPU at 600MHz revision.." ; \
+		}
+
+omap4430panda_MPU_600MHz_config \
 omap4430panda_config :    unconfig
-	@./mkconfig $(@:_config=) arm omap4 omap4430panda 1
+	@./mkconfig $(@:_config=) arm omap4 omap4430panda
+	echo "/* Generarated file. Do not edit */" >./include/config.h
+	echo "#include <configs/omap4430panda.h>" >>./include/config.h
+	@[ -n "$(findstring _MPU_600MHz,$@)" ] || \
+		{ echo "#define CONFIG_MPU_1000 1"	>>./include/config.h ; \
+		  echo "MPU at 1GHz revision.." ; \
+		}
+	@[ -z "$(findstring _MPU_600MHz,$@)" ] || \
+		{ echo "#define CONFIG_MPU_600 1"	>>./include/config.h ; \
+		  echo "MPU at 600MHz revision.." ; \
+		}
+
+omap3430labrador_config :    unconfig
+	@./mkconfig $(@:_config=) arm omap3 omap3430labrador
+
+omap3430labradordownload_config :    unconfig
+	@./mkconfig omap3430labrador arm omap3 omap3430labrador; \
+	echo "#define START_LOADB_DOWNLOAD" >> ./include/config-2.h; \
+	cat ./include/config.h >> ./include/config-2.h; \
+	mv ./include/config-2.h ./include/config.h
+
+omap3430zoom2_config :    unconfig
+	@./mkconfig $(@:_config=) arm omap3 omap3430labrador
+
+omap3430zoom2_512m_config :    unconfig
+	@./mkconfig $(@:_config=) arm omap3 omap3430labrador
+	sed -e ' s/CONFIG_3430ZOOM2/CONFIG_3430ZOOM2_512M/ ' < \
+	  ./include/configs/omap3430zoom2.h  | \
+	sed -e ' s/#define CFG_NAND 1/#undef CFG_NAND/ ' \
+	>> ./include/config-2.h; \
+	mv ./include/config-2.h ./include/config.h
 
 #########################################################################
 

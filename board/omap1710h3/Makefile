@@ -1,6 +1,6 @@
 #
-# (C) Copyright 2002
-# Gary Jennejohn, DENX Software Engineering, <gj@denx.de>
+# (C) Copyright 2000, 2001, 2002
+# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 #
 # See file CREDITS for list of people who contributed to this
 # project.
@@ -20,13 +20,25 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA 02111-1307 USA
 #
-PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8
 
-PLATFORM_CPPFLAGS += -march=armv7-a
-# =========================================================================
-#
-# Supply options according to compiler version
-#
-# =========================================================================
-PLATFORM_CPPFLAGS +=$(call cc-option,-mapcs-32,-mabi=apcs-gnu)
-PLATFORM_RELFLAGS +=$(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,))
+include $(TOPDIR)/config.mk
+
+LIB	= lib$(BOARD).a
+
+OBJS	:= omap1710h3.o 
+SOBJS	:= platform.o
+
+$(LIB):	$(OBJS) $(SOBJS)
+	$(AR) crv $@ $^
+
+clean:
+	rm -f $(SOBJS) $(OBJS)
+
+distclean:	clean
+	rm -f $(LIB) core *.bak .depend
+
+#########################################################################
+
+-include .depend
+
+#########################################################################

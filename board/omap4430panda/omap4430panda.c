@@ -1,7 +1,10 @@
 /*
- * (C) Copyright 2004-2009
+ * omap4430panda
+ *
+ * (C) Copyright 2004-2010 Texas Instruments.  All rights reserved.
  * Texas Instruments, <www.ti.com>
  * Richard Woodruff <r-woodruff2@ti.com>
+ * David Anders <x0132446@ti.com>
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -30,6 +33,7 @@
 #include <asm/arch/clocks.h>
 #include <asm/arch/mem.h>
 #include <i2c.h>
+#include <asm/mach-types.h>
 #if (CONFIG_COMMANDS & CFG_CMD_NAND) && defined(CFG_NAND_LEGACY)
 #include <linux/mtd/nand_legacy.h>
 #endif
@@ -525,6 +529,9 @@ static void ddr_init(void)
 	/* MEMIF Clock Domain -> HW_AUTO */
 	sr32(CM_MEMIF_CLKSTCTRL, 0, 32, 0x3);
 }
+
+#define CONFIG_OMAP4_SDC		1
+
 /*****************************************
  * Routine: board_init
  * Description: Early hardware init.
@@ -532,6 +539,33 @@ static void ddr_init(void)
 int board_init(void)
 {
 	unsigned int v;
+	unsigned int rev = omap_revision();
+
+	if (rev != OMAP4430_ES1_0) {
+		if (__raw_readl(0x4805D138) & (1 << 22)) {
+			/* enable software ioreq */
+			sr32(0x4A30a31C, 8, 1, 0x1);
+			/* set for sys_clk (38.4MHz) */
+			sr32(0x4A30a31C, 1, 2, 0x0);
+			/* set divisor to 2 */
+			sr32(0x4A30a31C, 16, 4, 0x1);
+			/* set the clock source to active */
+			sr32(0x4A30a110, 0, 1, 0x1);
+			/* enable clocks */
+			sr32(0x4A30a110, 2, 2, 0x3);
+		} else {
+			/* enable software ioreq */
+			sr32(0x4A30a314, 8, 1, 0x1);
+			/* set for PER_DPLL */
+			sr32(0x4A30a314, 1, 2, 0x2);
+			/* set divisor to 16 */
+			sr32(0x4A30a314, 16, 4, 0xf);
+			/* set the clock source to active */
+			sr32(0x4A30a110, 0, 1, 0x1);
+			/* enable clocks */
+			sr32(0x4A30a110, 2, 2, 0x3);
+		}
+	}
 
 	/*
 	 * If the ROM has started the OTG stuff, stop it and
@@ -771,6 +805,9 @@ int dram_init(void)
 
 #define		CP(x)	(CONTROL_PADCONF_##x)
 #define		WK(x)	(CONTROL_WKUP_##x)
+
+#define		OMAP44XX_WKUP_CTRL_BASE		0x4A31E000 
+
 /*
  * IEN  - Input Enable
  * IDIS - Input Disable
@@ -1185,3 +1222,4 @@ int nand_init(void)
 {
 	return 0;
 }
+

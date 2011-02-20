@@ -96,13 +96,22 @@ _bss_end:
  */
 
 reset:
-	/* Use a temp scratch pad memory
-	 * to store the boot reason
-	 */
+	/* Store the boot reason/device in scratchpad */
 	ldr     r4, scratchpad
 	ldr     r5, [r0, #0x8]          /* r5 <- value of boot device */
+	bic	r5, r5, #0xFFFFFF00	@ clear bits other than first byte*/
 	str     r5, [r4]                /* store r5 in scratchpad reg */
 
+	cmp	r5, #0x40
+	bgt	skip_type_check
+
+	/* Store the boot mode (raw/FAT) in scratchpad */
+	ldr	r5, [r0, #0x4]		/* get the device descriptor ptr */
+	ldr	r5, [r5, #0x18]		/* get the pDeviceData ptr */
+	ldr	r5, [r5, #0x8]		/* get the boot mode */
+	str	r5, [r4, #0x4]		/* store boot mode in scratchpad+4 */
+
+skip_type_check:
 	/*
 	 * set the cpu to SVC32 mode
 	 */
@@ -186,6 +195,7 @@ cpu_init_crit:
         mov	r0, #0                 /* set up for MCR */
         mcr	p15, 0, r0, c8, c7, 0  /* invalidate TLBs */
         mcr	p15, 0, r0, c7, c5, 0  /* invalidate icache */
+	mcr	p15, 0, r0, c7, c5, 6  /* invalidate BP array */
 
 	/*
 	 * disable MMU stuff and caches
@@ -194,7 +204,8 @@ cpu_init_crit:
 	bic	r0, r0, #0x00002000	@ clear bits 13 (--V-)
 	bic	r0, r0, #0x00000007	@ clear bits 2:0 (-CAM)
 	orr	r0, r0, #0x00000002	@ set bit 1 (--A-) Align
-	orr	r0, r0, #0x00000800	@ set bit 12 (Z---) BTB
+	orr	r0, r0, #0x00000800	@ set bit 11 (Z---) BTB
+	orr	r0, r0, #0x00001000	@ set bit 12 (I) I-cache
 	mcr	p15, 0, r0, c1, c0, 0
 
 	/*

@@ -43,7 +43,6 @@ typedef volatile unsigned char	vu_char;
 #define asmlinkage	/* nothing */
 #endif
 
-
 #ifdef CONFIG_ARM
 # include <asm/setup.h>
 # include <asm/x-load-arm.h>	/* ARM version to be fixed! */
@@ -85,7 +84,6 @@ int 	nand_read_block(uchar *buf, ulong block_addr);
 
 int 	onenand_chip(void);
 int	onenand_read_block(unsigned char *buf, ulong block);
-
 
 #ifdef CFG_PRINTF
 

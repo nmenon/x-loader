@@ -141,6 +141,9 @@ endif
 CPPFLAGS += -I$(TOPDIR)/include
 CPPFLAGS += -fno-builtin -ffreestanding -nostdinc      \
        -isystem $(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
+	-I$(TOPDIR)/include				\
+	-fno-builtin -ffreestanding -nostdinc -isystem	\
+	$(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
 
 ifdef BUILD_TAG
 CFLAGS := $(CPPFLAGS) -Wall -Wstrict-prototypes \
@@ -204,5 +207,9 @@ $(obj)%.o:	%.S
 $(obj)%.o:	%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 endif
+
+.depend:	Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c) $(AOBJS:.o=.S)  $(START:.o=.S) $(COBJS:.o=.c)
+		$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) | \
+			sed -e "s/\:/\\\:/g"|sed -e "s/\\\: /\: /g"> $@
 
 #########################################################################
