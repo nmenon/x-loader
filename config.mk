@@ -95,7 +95,7 @@ HOSTCC		= cc
 else
 HOSTCC		= gcc
 endif
-HOSTCFLAGS	= -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+HOSTCFLAGS	+= -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
 HOSTSTRIP	= strip
 
 #########################################################################
@@ -146,10 +146,10 @@ CPPFLAGS += -fno-builtin -ffreestanding -nostdinc      \
 	$(gccincdir) -pipe $(PLATFORM_CPPFLAGS)
 
 ifdef BUILD_TAG
-CFLAGS := $(CPPFLAGS) -Wall -Wstrict-prototypes \
+CFLAGS += $(CPPFLAGS) -Wall -Wstrict-prototypes \
 	-DBUILD_TAG='"$(BUILD_TAG)"'
 else
-CFLAGS := $(CPPFLAGS) -Wall -Wstrict-prototypes
+CFLAGS += $(CPPFLAGS) -Wall -Wstrict-prototypes
 endif
 
 ifeq ($(ARCH),arm)
