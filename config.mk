@@ -152,6 +152,10 @@ else
 CFLAGS := $(CPPFLAGS) -Wall -Wstrict-prototypes
 endif
 
+ifeq ($(ARCH),arm)
+CFLAGS += -marm -fno-stack-protector
+endif
+
 AFLAGS_DEBUG := -Wa,-gstabs
 AFLAGS := $(AFLAGS_DEBUG) -D__ASSEMBLY__ $(CPPFLAGS) -Wa,-march=armv7-a+sec
 
