@@ -22,6 +22,7 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -235,7 +236,11 @@ static struct ch_chsettings_nochram config_header
 };
 #endif
 
-#define die(...) do { fprintf(stderr, __VA_ARGS__); exit(1); } while (0);
+#define err(...) do { int save_errno = errno; \
+                      fprintf(stderr, __VA_ARGS__); \
+                      errno = save_errno; \
+                    } while (0);
+#define pdie(func, ...) do { perror(func); exit(1); } while (0);
 
 int main(int argc, char *argv[])
 {
@@ -266,8 +271,10 @@ int main(int argc, char *argv[])
 
 	/* Open the input file. */
 	ifile = fopen(ifname, "rb");
-	if (ifile == NULL)
-		die("Cannot open %s\n", ifname);
+	if (ifile == NULL) {
+		err("Cannot open %s\n", ifname);
+		pdie("fopen");
+	}
 
 	/* Get file length. */
 	stat(ifname, &sinfo);
@@ -277,7 +284,8 @@ int main(int argc, char *argv[])
 	ofile = fopen(ofname, "wb");
 	if (ofile == NULL) {
 		fclose(ifile);
-		die("Cannot open %s\n", ofname);
+		err("Cannot open %s\n", ofname);
+		pdie("fopen");
 	}
 
 	/* Pad 1 sector of zeroes. */
