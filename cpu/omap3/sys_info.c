@@ -290,3 +290,20 @@ void secure_unlock(void)
 
 	__raw_writel(UNLOCK_1, SMS_RG_ATT0); /* SDRC region 0 public */
 }
+
+/*
+ * try_unlock_memory(void): If chip is GP type, unlock the SRAM for
+ *  general use.
+ */
+void try_unlock_memory(void)
+{
+	int mode;
+
+	/* if GP device unlock device SRAM for general use */
+	/* secure code breaks for Secure/Emulation device - HS/E/T*/
+	mode = get_device_type();
+	if (mode == GP_DEVICE) {
+		secure_unlock();
+	}
+	return;
+}

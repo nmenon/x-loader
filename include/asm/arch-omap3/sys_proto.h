@@ -55,6 +55,7 @@ u32 get_device_type(void);
 void get_sys_clkin_sel(u32 osc_clk, u32 *sys_clkin_sel);
 
 void secure_unlock(void);
+void try_unlock_memory(void);
 
 void sr32(u32 addr, u32 start_bit, u32 num_bits, u32 value);
 u32 wait_on_value(u32 read_bit_mask, u32 match_value, u32 read_addr, u32 bound);

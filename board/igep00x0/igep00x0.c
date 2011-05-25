@@ -263,23 +263,6 @@ void prcm_init(void)
 	delay(5000);
 }
 
-/**********************************************************
- * Routine: try_unlock_sram()
- * Description: If chip is GP type, unlock the SRAM for
- *  general use.
- ***********************************************************/
-void try_unlock_memory(void)
-{
-	int mode;
-
-	/* if GP device unlock device SRAM for general use */
-	/* secure code breaks for Secure/Emulation device - HS/E/T */
-	mode = get_device_type();
-	if (mode == GP_DEVICE)
-		secure_unlock();
-	return;
-}
-
 /*********************************************************************
  * config_sdram_m65kx002am() - 2 dice of 2Gb, DDR x32 I/O, 4KB page
  *********************************************************************/
