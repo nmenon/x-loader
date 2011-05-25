@@ -159,29 +159,6 @@ u32 get_mem_type(void)
 }
 
 /******************************************
- * get_cpu_id(void) - extract cpu id
- * returns 0 for ES1.0, cpuid otherwise
- ******************************************/
-u32 get_cpu_id(void)
-{
-	u32 cpuid = 0;
-
-	/*
-	 * On ES1.0 the IDCODE register is not exposed on L4
-	 * so using CPU ID to differentiate between ES1.0 and > ES1.0.
-	 */
-	__asm__ __volatile__("mrc p15, 0, %0, c0, c0, 0":"=r"(cpuid));
-	if ((cpuid & 0xf) == 0x0) {
-		return 0;
-	} else {
-		/* Decode the IDs on > ES1.0 */
-		cpuid = __raw_readl(CONTROL_IDCODE);
-	}
-
-	return cpuid;
-}
-
-/******************************************
  * get_cpu_family(void) - extract cpu info
  ******************************************/
 u32 get_cpu_family(void)
