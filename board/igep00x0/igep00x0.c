@@ -124,36 +124,6 @@ u32 wait_on_value(u32 read_bit_mask, u32 match_value, u32 read_addr, u32 bound)
 }
 
 /******************************************
- * get_cpu_family(void) - extract cpu info
- ******************************************/
-u32 get_cpu_family(void)
-{
-	u16 hawkeye;
-	u32 cpu_family;
-	u32 cpuid = get_cpu_id();
-
-	if (cpuid == 0)
-		return CPU_OMAP34XX;
-
-	hawkeye = (cpuid >> HAWKEYE_SHIFT) & 0xffff;
-	switch (hawkeye) {
-	case HAWKEYE_OMAP34XX:
-		cpu_family = CPU_OMAP34XX;
-		break;
-	case HAWKEYE_AM35XX:
-		cpu_family = CPU_AM35XX;
-		break;
-	case HAWKEYE_OMAP36XX:
-		cpu_family = CPU_OMAP36XX;
-		break;
-	default:
-		cpu_family = CPU_OMAP34XX;
-	}
-
-	return cpu_family;
-}
-
-/******************************************
  * get_cpu_rev(void) - extract version info
  ******************************************/
 u32 get_cpu_rev(void)
