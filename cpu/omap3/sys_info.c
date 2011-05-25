@@ -257,3 +257,36 @@ void get_sys_clkin_sel(u32 osc_clk, u32 *sys_clkin_sel)
 	else if (osc_clk == S12M)
 		*sys_clkin_sel = 0;
 }
+
+/*
+ * secure_unlock(void): setup security registers for access
+ * (GP Device only)
+ */
+void secure_unlock(void)
+{
+	/* Permission values for registers -Full fledged permissions to all */
+	#define UNLOCK_1 0xFFFFFFFF
+	#define UNLOCK_2 0x00000000
+	#define UNLOCK_3 0x0000FFFF
+	/* Protection Module Register Target APE (PM_RT)*/
+	__raw_writel(UNLOCK_1, RT_REQ_INFO_PERMISSION_1);
+	__raw_writel(UNLOCK_1, RT_READ_PERMISSION_0);
+	__raw_writel(UNLOCK_1, RT_WRITE_PERMISSION_0);
+	__raw_writel(UNLOCK_2, RT_ADDR_MATCH_1);
+
+	__raw_writel(UNLOCK_3, GPMC_REQ_INFO_PERMISSION_0);
+	__raw_writel(UNLOCK_3, GPMC_READ_PERMISSION_0);
+	__raw_writel(UNLOCK_3, GPMC_WRITE_PERMISSION_0);
+
+	__raw_writel(UNLOCK_3, OCM_REQ_INFO_PERMISSION_0);
+	__raw_writel(UNLOCK_3, OCM_READ_PERMISSION_0);
+	__raw_writel(UNLOCK_3, OCM_WRITE_PERMISSION_0);
+	__raw_writel(UNLOCK_2, OCM_ADDR_MATCH_2);
+
+	/* IVA Changes */
+	__raw_writel(UNLOCK_3, IVA2_REQ_INFO_PERMISSION_0);
+	__raw_writel(UNLOCK_3, IVA2_READ_PERMISSION_0);
+	__raw_writel(UNLOCK_3, IVA2_WRITE_PERMISSION_0);
+
+	__raw_writel(UNLOCK_1, SMS_RG_ATT0); /* SDRC region 0 public */
+}
