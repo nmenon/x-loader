@@ -94,3 +94,16 @@ u32 get_cpu_family(void)
 
 	return cpu_family;
 }
+
+/*
+ * get_cpu_rev(void): extract version info
+ */
+u32 get_cpu_rev(void)
+{
+	u32 cpuid = get_cpu_id();
+
+	if (cpuid == 0)
+		return CPU_3XX_ES10;
+	else
+		return (cpuid >> CPU_3XX_ID_SHIFT) & 0xf;
+}
