@@ -83,23 +83,6 @@ u32 get_mem_type(void)
 	return GPMC_ONENAND;
 }
 
-/*********************************************************************
- * wait_on_value() - common routine to allow waiting for changes in
- *   volatile regs.
- *********************************************************************/
-u32 wait_on_value(u32 read_bit_mask, u32 match_value, u32 read_addr, u32 bound)
-{
-	u32 i = 0, val;
-	do {
-		++i;
-		val = __raw_readl(read_addr) & read_bit_mask;
-		if (val == match_value)
-			return 1;
-		if (i == bound)
-			return 0;
-	} while (1);
-}
-
 /*************************************************************
  * get_sys_clk_speed - determine reference oscillator speed
  *  based on known 32kHz clock and gptimer.
