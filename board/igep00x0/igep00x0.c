@@ -94,16 +94,6 @@ u32 get_device_type(void)
 	return mode >>= 8;
 }
 
-/************************************************
- * get_sysboot_value(void) - return SYS_BOOT[4:0]
- ************************************************/
-u32 get_sysboot_value(void)
-{
-	int mode;
-	mode = __raw_readl(CONTROL_STATUS) & (SYSBOOT_MASK);
-	return mode;
-}
-
 /*************************************************************
  * Routine: get_mem_type(void) - returns the kind of memory connected
  * to GPMC that we are trying to boot form. Uses SYS BOOT settings.
@@ -971,9 +961,3 @@ void raise(void)
 {
 }
 
-/******************************************************************************
- * Dummy function to handle errors for EABI incompatibility
- *****************************************************************************/
-void abort(void)
-{
-}
