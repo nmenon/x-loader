@@ -24,6 +24,16 @@
 #include <asm/arch/sys_proto.h>
 #include <asm/arch/sys_info.h>
 
+static char *rev_s[CPU_3XX_MAX_REV] = {
+				"1.0",
+				"2.0",
+				"2.1",
+				"3.0",
+				"3.1",
+				"UNKNOWN",
+				"UNKNOWN",
+				"3.1.2"};
+
 /*
  *  get_device_type(): tell if GP/HS/EMU/TST
  */
@@ -106,4 +116,85 @@ u32 get_cpu_rev(void)
 		return CPU_3XX_ES10;
 	else
 		return (cpuid >> CPU_3XX_ID_SHIFT) & 0xf;
+}
+
+/*
+ * print_cpuinfo(void): print CPU information
+ */
+int print_cpuinfo(void)
+{
+	char *cpu_family_s, *cpu_s, *sec_s;
+
+	switch (get_cpu_family()) {
+	case CPU_OMAP34XX:
+		cpu_family_s = "OMAP";
+		switch (get_cpu_type()) {
+		case OMAP3503:
+			cpu_s = "3503";
+			break;
+		case OMAP3515:
+			cpu_s = "3515";
+			break;
+		case OMAP3525:
+			cpu_s = "3525";
+			break;
+		case OMAP3530:
+			cpu_s = "3530";
+			break;
+		default:
+			cpu_s = "35XX";
+			break;
+		}
+		break;
+	case CPU_AM35XX:
+		cpu_family_s = "AM";
+		switch (get_cpu_type()) {
+		case AM3505:
+			cpu_s = "3505";
+			break;
+		case AM3517:
+			cpu_s = "3517";
+			break;
+		default:
+			cpu_s = "35XX";
+			break;
+		}
+		break;
+	case CPU_OMAP36XX:
+		cpu_family_s = "OMAP";
+		switch (get_cpu_type()) {
+		case OMAP3730:
+			cpu_s = "3630/3730";
+			break;
+		default:
+			cpu_s = "36XX/37XX";
+			break;
+		}
+		break;
+	default:
+		cpu_family_s = "OMAP";
+		cpu_s = "35XX";
+	}
+
+	switch (get_device_type()) {
+	case TST_DEVICE:
+		sec_s = "TST";
+		break;
+	case EMU_DEVICE:
+		sec_s = "EMU";
+		break;
+	case HS_DEVICE:
+		sec_s = "HS";
+		break;
+	case GP_DEVICE:
+		sec_s = "GP";
+		break;
+	default:
+		sec_s = "?";
+	}
+
+	printf("%s%s-%s ES%s\n",
+			cpu_family_s, cpu_s, sec_s, rev_s[get_cpu_rev()]);
+
+	return 0;
 }
