@@ -94,14 +94,6 @@ u32 get_mem_type(void)
 }
 
 /******************************************
- * get_cpu_type(void) - extract cpu info
- ******************************************/
-u32 get_cpu_type(void)
-{
-	return __raw_readl(CONTROL_OMAP_STATUS);
-}
-
-/******************************************
  * get_cpu_id(void) - extract cpu id
  * returns 0 for ES1.0, cpuid otherwise
  ******************************************/

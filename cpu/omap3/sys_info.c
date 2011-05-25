@@ -33,3 +33,11 @@ u32 get_device_type(void)
 	mode = __raw_readl(CONTROL_STATUS) & (DEVICE_MASK);
 	return mode >>= 8;
 }
+
+/*
+ *  get_cpu_type(): extract cpu info
+ */
+u32 get_cpu_type(void)
+{
+	return __raw_readl(CONTROL_OMAP_STATUS);
+}
