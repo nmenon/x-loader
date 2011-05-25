@@ -78,15 +78,6 @@ int board_init (void)
 	return 0;
 }
 
-/************************************************
- * get_sysboot_value(void) - return SYS_BOOT[4:0]
- ************************************************/
-u32 get_sysboot_value(void)
-{
-        int mode;
-        mode = __raw_readl(CONTROL_STATUS) & (SYSBOOT_MASK);
-        return mode;
-}
 /*************************************************************
  * Routine: get_mem_type(void) - returns the kind of memory connected
  * to GPMC that we are trying to boot form. Uses SYS BOOT settings.

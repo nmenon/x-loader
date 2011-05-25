@@ -198,3 +198,13 @@ int print_cpuinfo(void)
 
 	return 0;
 }
+
+/*
+ * get_sysboot_value(void): return SYS_BOOT[4:0]
+ */
+u32 get_sysboot_value(void)
+{
+	int mode;
+	mode = __raw_readl(CONTROL_STATUS) & (SYSBOOT_MASK);
+	return mode;
+}
