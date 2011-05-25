@@ -85,16 +85,6 @@ void udelay (unsigned long usecs) {
 }
 
 /*************************************************************
- *  get_device_type(): tell if GP/HS/EMU/TST
- *************************************************************/
-u32 get_device_type(void)
-{
-	int mode;
-	mode = __raw_readl(CONTROL_STATUS) & (DEVICE_MASK);
-	return mode >>= 8;
-}
-
-/*************************************************************
  * Routine: get_mem_type(void) - returns the kind of memory connected
  * to GPMC that we are trying to boot form. Uses SYS BOOT settings.
  *************************************************************/
