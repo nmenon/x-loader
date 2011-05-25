@@ -187,25 +187,6 @@ u32 get_osc_clk_speed(void)
 }
 
 /******************************************************************************
- * get_sys_clkin_sel() - returns the sys_clkin_sel field value based on
- *   -- input oscillator clock frequency.
- *
- *****************************************************************************/
-void get_sys_clkin_sel(u32 osc_clk, u32 *sys_clkin_sel)
-{
-	if(osc_clk == S38_4M)
-		*sys_clkin_sel=  4;
-	else if(osc_clk == S26M)
-		*sys_clkin_sel = 3;
-	else if(osc_clk == S19_2M)
-		*sys_clkin_sel = 2;
-	else if(osc_clk == S13M)
-		*sys_clkin_sel = 1;
-	else if(osc_clk == S12M)
-		*sys_clkin_sel = 0;
-}
-
-/******************************************************************************
  * prcm_init() - inits clocks for PRCM as defined in clocks.h
  *   -- called from SRAM, or Flash (using temp SRAM stack).
  *****************************************************************************/
