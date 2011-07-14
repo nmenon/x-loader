@@ -201,9 +201,6 @@ unconfig:
 ## OMAP2 (ARM1136) Systems
 #########################################################################
 
-omap2420h4_config :    unconfig
-	@$(MKCONFIG) $(@:_config=) arm arm1136 omap2420h4
-
 omap2430sdp_config :    unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm1136 omap2430sdp
 
