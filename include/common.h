@@ -98,7 +98,7 @@ int	serial_getc   (void);
 int	serial_tstc   (void);
 
 /* lib/printf.c */
-void	serial_printf (const char *fmt, ...);
+int	serial_printf (const char *fmt, ...);
 #endif
 
 /* lib/crc.c */
