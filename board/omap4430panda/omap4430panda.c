@@ -531,6 +531,7 @@ static void ddr_init(void)
  *****************************************/
 int board_init(void)
 {
+	unsigned int rev = omap_revision();
 	unsigned int v;
 
 	/*
@@ -546,10 +547,32 @@ int board_init(void)
 	v = __raw_readl(OMAP44XX_GPIO_BASE2 + __GPIO_DATAOUT);
 	__raw_writel((v & ~(1 << 30)), OMAP44XX_GPIO_BASE2 + __GPIO_DATAOUT);
 
-	/* kill USB PLL */
+	if (rev == OMAP4430_ES1_0)
+		return 0;
 
-	v = __raw_readl(CM_CLKMODE_DPLL_USB);
-	__raw_writel((v & ~7) | 1, CM_CLKMODE_DPLL_USB);
+	if (__raw_readl(OMAP44XX_GPIO_BASE6 + __GPIO_DATAIN) & (1 << 22)) {
+		/* enable software ioreq */
+		sr32(OMAP44XX_SCRM_AUXCLK3, 8, 1, 0x1);
+		/* set for sys_clk (38.4MHz) */
+		sr32(OMAP44XX_SCRM_AUXCLK3, 1, 2, 0x0);
+		/* set divisor to 2 */
+		sr32(OMAP44XX_SCRM_AUXCLK3, 16, 4, 0x1);
+		/* set the clock source to active */
+		sr32(OMAP44XX_SCRM_ALTCLKSRC, 0, 1, 0x1);
+		/* enable clocks */
+		sr32(OMAP44XX_SCRM_ALTCLKSRC, 2, 2, 0x3);
+	} else {
+		/* enable software ioreq */
+		sr32(OMAP44XX_SCRM_AUXCLK1, 8, 1, 0x1);
+		/* set for PER_DPLL */
+		sr32(OMAP44XX_SCRM_AUXCLK1, 1, 2, 0x2);
+		/* set divisor to 16 */
+		sr32(OMAP44XX_SCRM_AUXCLK1, 16, 4, 0xf);
+		/* set the clock source to active */
+		sr32(OMAP44XX_SCRM_ALTCLKSRC, 0, 1, 0x1);
+		/* enable clocks */
+		sr32(OMAP44XX_SCRM_ALTCLKSRC, 2, 2, 0x3);
+	}
 
 	return 0;
 }
@@ -683,8 +706,6 @@ static int scale_vcores(void)
 
 void s_init(void)
 {
-	unsigned int rev = omap_revision();
-
 	/*
 	 * this is required to survive the muxconf in the case the ROM
 	 * started up USB OTG
@@ -707,33 +728,6 @@ void s_init(void)
 	/* setup_auxcr(get_device_type(), external_boot); */
 
 	ddr_init();
-
-	if (rev == OMAP4430_ES1_0)
-		return;
-
-	if (__raw_readl(OMAP44XX_GPIO_BASE6 + __GPIO_DATAIN) & (1 << 22)) {
-		/* enable software ioreq */
-		sr32(OMAP44XX_SCRM_AUXCLK3, 8, 1, 0x1);
-		/* set for sys_clk (38.4MHz) */
-		sr32(OMAP44XX_SCRM_AUXCLK3, 1, 2, 0x0);
-		/* set divisor to 2 */
-		sr32(OMAP44XX_SCRM_AUXCLK3, 16, 4, 0x1);
-		/* set the clock source to active */
-		sr32(OMAP44XX_SCRM_ALTCLKSRC, 0, 1, 0x1);
-		/* enable clocks */
-		sr32(OMAP44XX_SCRM_ALTCLKSRC, 2, 2, 0x3);
-	} else {
-		/* enable software ioreq */
-		sr32(OMAP44XX_SCRM_AUXCLK1, 8, 1, 0x1);
-		/* set for PER_DPLL */
-		sr32(OMAP44XX_SCRM_AUXCLK1, 1, 2, 0x2);
-		/* set divisor to 16 */
-		sr32(OMAP44XX_SCRM_AUXCLK1, 16, 4, 0xf);
-		/* set the clock source to active */
-		sr32(OMAP44XX_SCRM_ALTCLKSRC, 0, 1, 0x1);
-		/* enable clocks */
-		sr32(OMAP44XX_SCRM_ALTCLKSRC, 2, 2, 0x3);
-	}
 }
 
 /*******************************************************
