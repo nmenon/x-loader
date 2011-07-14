@@ -36,10 +36,6 @@ Nand booting.
 Status:
 =======
 
-The support for Texas Instruments H4 board (OMAP2420) has been implemented
-and tested. (Nov 2004)
-The support for Texas Instruments 2430SDP board (OMAP2430) has been implemented
-and tested. (Jul 2006)
 The support for Texas Instruments 3430SDP board (OMAP3430) has been implemented
 and tested. (Dec 2006)
 
@@ -55,15 +51,10 @@ Directory Hierarchy:
 - drivers	Commonly used device drivers
 - lib		Libraries
  
-- cpu/arm926ejs Files specific to ARM 926 CPUs
 - cpu/arm1136 Files specific to ARM 1136 CPUs
 - cpu/omap3 Files specific to ARM CortexA8 CPU
 
  
-- board/omap2420h4
-		Files specific to OMAP 2420 H4 boards
-- board/omap2430sdp
-		Files specific to OMAP 2430 2430sdp boards
 - board/omap3430sdp
 		Files specific to OMAP 3420sdp boards
 
@@ -116,8 +107,7 @@ You can't use FlashWriterNand because it uses ROM code ECC style.
 
 Implemenation notes:
 ====================
-H4 support NAND flash booting
-2430sdp & 3430sdp support OneNAND booting
+3430sdp support OneNAND booting
 
 
 
