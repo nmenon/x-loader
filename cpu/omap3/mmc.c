@@ -516,10 +516,10 @@ unsigned char configure_mmc(mmc_card_data *mmc_card_cur)
 	return 1;
 }
 unsigned long mmc_bread(int dev_num, unsigned long blknr, lbaint_t blkcnt,
-			void *dst)
+			unsigned long *dst)
 {
 	omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
-			   (unsigned long *) dst);
+			   dst);
 	return 1;
 }
 
