@@ -31,6 +31,7 @@
  */
 
 #include <common.h>
+#include <i2c.h>
 #include <part.h>
 #include <fat.h>
 #include <asm/arch/mem.h>
