@@ -29,7 +29,7 @@ LIB	= $(obj)lib$(ARCH).a
 
 SOBJS	= _udivsi3.o _umodsi3.o
 
-COBJS	= board.o ecc.o printf.o div0.o 
+COBJS	= board.o ecc.o printf.o div0.o eabi_compat.o 
 
 SRCS	:= $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS	:= $(addprefix $(obj),$(SOBJS) $(COBJS))
