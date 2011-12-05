@@ -18,6 +18,9 @@
 Enric Balletbo i Serra, <eballetbo@iseebcn.com>
 	igep00x0	ARM ARMV7 (OMAP3xx SoC)
 
+Tapani Utriainen, <tapani@technexion.com>
+	tam3517		ARM ARMV7 (Sitara AM3517 SoM)
+
 #########################################################################
 # OMAP4 Systems:							#
 #									#

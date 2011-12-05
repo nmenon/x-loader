@@ -31,6 +31,7 @@
 
 #include <config.h>
 #include <asm/arch/cpu.h>
+#incldue <asm/arch-omap3/omap3430.h>
 
 .globl _start
 _start:	
