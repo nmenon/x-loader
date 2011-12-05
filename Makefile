@@ -227,6 +227,9 @@ tam3517_config :	unconfig
 
 tao3530_config :	unconfig
 	@$(MKCONFIG) $(@:_config=) arm omap3 tao3530
+
+tdm3730_config :	unconfig
+	@$(MKCONFIG) $(@:_config=) arm omap3 tdm3730
 	
 #########################################################################
 ## OMAP4 (ARM-CortexA9) Systems
